@@ -39,6 +39,8 @@ El proyecto sigue una estructura organizativa que promueve prácticas de Clean C
 
 Carpeta src: Contiene el código fuente de la lógica de la aplicación. Tiene subcarpetas por cada capa de la aplicación.
 
+Carpeta logica:Contiene la parte logica del proyecto
+
 Carpeta tests: Contiene las pruebas unitarias.
 
 Recuerde que cada carpeta de código fuente debe contener un archivo __init__.py que permite que Python reconozca la carpeta como un Módulo y pueda hacer import.
