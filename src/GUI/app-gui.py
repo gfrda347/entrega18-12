@@ -15,41 +15,52 @@ sys.path.append("src")
 # Añade la ruta donde está la fuente Roboto
 resource_add_path('fonts')
 
+
 class CalculadoraLiquidacion:
     def __init__(self, valor_uvt=39205):
         self.valor_uvt = valor_uvt
 
     def calcular_resultados_prueba(self, salario_basico, fecha_inicio_labores, fecha_ultimas_vacaciones, dias_acumulados_vacaciones):
+    # Calcula los días trabajados usando las fechas proporcionadas
+        fecha_inicio = datetime.strptime(fecha_inicio_labores, "%d/%m/%Y")
+        fecha_ultimas_vacaciones = datetime.strptime(fecha_ultimas_vacaciones, "%d/%m/%Y")
+        dias_trabajados = (fecha_ultimas_vacaciones - fecha_inicio).days
+
+    # Calcula los otros componentes de la liquidación
         indemnizacion = self.calcular_liquidacion(salario_basico, fecha_inicio_labores, fecha_ultimas_vacaciones)
         vacaciones = self.calcular_vacaciones(salario_basico)
-        cesantias = self.calcular_cesantias(salario_basico, dias_acumulados_vacaciones)
+        cesantias = self.calcular_cesantias(salario_basico, dias_trabajados)
         intereses_cesantias = self.calcular_intereses_cesantias(cesantias, dias_acumulados_vacaciones)
-        primas = self.calcular_prima(salario_basico)
+        primas = self.calcular_prima(salario_basico, dias_trabajados)
         retencion_fuente = self.calcular_retencion(indemnizacion + vacaciones + cesantias + intereses_cesantias + primas)
         total_pagar = indemnizacion + vacaciones + cesantias + intereses_cesantias + primas - retencion_fuente
         return indemnizacion, vacaciones, cesantias, intereses_cesantias, primas, retencion_fuente, total_pagar
 
+    
+#formula para la indemnizacion  se divide el 
+#salario por los 30 días correspondientes y se multiplica por los días que faltaron para culminar el contrato.
     def calcular_liquidacion(self, salario, fecha_inicio, fecha_fin):
         if salario < 0:
             raise ValueError("El salario básico no puede ser negativo")
-    
         fecha_inicio = datetime.strptime(fecha_inicio, "%d/%m/%Y")
-        fecha_fin = datetime.strptime(fecha_fin, "%d/%m/%Y")
         dias_trabajados = (fecha_fin - fecha_inicio).days + 1
         valor_diario = salario / 30
         liquidacion = valor_diario * dias_trabajados
         return round(liquidacion, 2)
 
+#para hallar las vacaciones Salario mensual básico multiplicado por días trabajados, dividido entre 720.
     def calcular_vacaciones(self, salario_mensual):
         valor_vacaciones = salario_mensual * (1/24)  # 1/24
         return round(valor_vacaciones, 2)
-
+    
+#para las cesantias (salario mensual x días laborados) / 360.
     def calcular_cesantias(self, salario_mensual, dias_trabajados):
         if dias_trabajados < 0:
             raise ValueError("Los días trabajados no pueden ser negativos")
         cesantias = (salario_mensual * dias_trabajados) / 360
         return round(cesantias, 2)
 
+#para calcular los intereses de las cesantias  Cesantías x Días trabajados x 0,12 ÷ 360.
     def calcular_intereses_cesantias(self, cesantias, dias_trabajados):
         if cesantias < 0:
             raise ValueError("El valor de las cesantías no puede ser negativo")
@@ -58,8 +69,9 @@ class CalculadoraLiquidacion:
         intereses_cesantias = (cesantias * dias_trabajados * 0.12) / 360
         return round(intereses_cesantias, 2)
 
-    def calcular_prima(self, salario_mensual):
-        prima = salario_mensual * (1/12)  # 1/12
+#para calcular la prima  salario x tiempo laborado en días / 360.
+    def calcular_prima(self, salario_mensual, dias_trabajados):
+        prima = salario_mensual *(dias_trabajados / 360)  
         return round(prima, 2)
 
     def calcular_retencion(self, salario_basico):
@@ -75,7 +87,7 @@ class CalculadoraLiquidacion:
             base_pesos = base_uvt * self.valor_uvt
             retencion = (base_pesos * 0.19) + (10 * self.valor_uvt)
         return round(retencion, 2)
-
+    
 class ResultadosScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
