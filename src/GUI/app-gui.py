@@ -82,16 +82,12 @@ class CalculadoraLiquidacion:
             retencion = (base_pesos * 0.19) + (10 * self.valor_uvt)
         return round(retencion, 2)
 
-# Crear una instancia de la calculadora
 class ResultadosScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.layout = GridLayout(cols=1, padding=60, spacing=30)
         self.add_widget(self.layout)
-
-        #Se edita el color
         Window.clearcolor = get_color_from_hex('2272FF')
-
         self.resultados_label = Label(text="", font_name='fonts/Roboto-Regular.ttf', font_size=14, halign='left', valign='top', color=get_color_from_hex('1D1D1'))
         self.layout.add_widget(self.resultados_label)
 
@@ -140,7 +136,6 @@ class LiquidacionApp(App):
         # Se agrega la pantalla donde aparecen los resultados
         self.resultados_screen = ResultadosScreen(name="resultados")
         self.screen_manager.add_widget(self.resultados_screen)
-
         return self.screen_manager
 
     def calcular(self, instance):
@@ -158,7 +153,6 @@ class LiquidacionApp(App):
             fecha_vacaciones = self.fecha_vacaciones_input.text
             dias_vacaciones = int(self.dias_vacaciones_input.text)
             motivo_salida = self.motivo_salida_input.text
-
             indemnizacion, vacaciones, cesantias, intereses_cesantias, primas, retencion_fuente, total_pagar = self.calculadora.calcular_resultados_prueba(
                 salario_basico=salario,
                 fecha_inicio_labores=fecha_inicio,
