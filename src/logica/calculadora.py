@@ -48,7 +48,9 @@ class CalculadoraLiquidacion:
         return round(intereses_cesantias, 2)
 
     def calcular_prima(self, salario_mensual, dias_trabajados):
-        prima = salario_mensual * (dias_trabajados / 360)  
+        if dias_trabajados < 0:
+            raise ValueError("Los días trabajados no pueden ser negativos")
+        prima = salario_mensual * (dias_trabajados / 360)
         return round(prima, 2)
 
     def calcular_retencion(self, salario_basico):
@@ -56,20 +58,34 @@ class CalculadoraLiquidacion:
             raise ValueError("El salario básico debe ser un número")
         retencion = 0
         salario_basico = float(salario_basico)
-        if salario_basico <= 42412:
+        ingreso_uvt = salario_basico / self.valor_uvt
+
+        if ingreso_uvt <= 95:
             pass
-        elif salario_basico <= 636132:
-            ingreso_uvt = salario_basico / self.valor_uvt
+        elif ingreso_uvt <= 150:
             base_uvt = ingreso_uvt - 95
-            base_pesos = base_uvt * self.valor_uvt
-            retencion = (base_pesos * 0.19) + (10 * self.valor_uvt)
+            retencion = base_uvt * 0.19 * self.valor_uvt
+        elif ingreso_uvt <= 360:
+            base_uvt = ingreso_uvt - 150
+            retencion = base_uvt * 0.28 * self.valor_uvt + 10 * self.valor_uvt
+        elif ingreso_uvt <= 640:
+            base_uvt = ingreso_uvt - 360
+            retencion = base_uvt * 0.33 * self.valor_uvt + 69 * self.valor_uvt
+        elif ingreso_uvt <= 945:
+            base_uvt = ingreso_uvt - 640
+            retencion = base_uvt * 0.35 * self.valor_uvt + 162 * self.valor_uvt
+        elif ingreso_uvt <= 2300:
+            base_uvt = ingreso_uvt - 945
+            retencion = base_uvt * 0.37 * self.valor_uvt + 268 * self.valor_uvt
+        else:
+            base_uvt = ingreso_uvt - 2300
+            retencion = base_uvt * 0.39 * self.valor_uvt + 770 * self.valor_uvt
         return round(retencion, 2)
     
 if __name__ == "__main__":
 
     calculadora = CalculadoraLiquidacion()
 
-    # Solicitar datos al usuario
     salario_basico = float(input("Ingrese el salario básico en pesos colombianos: "))
     fecha_inicio_labores = input("Ingrese la fecha de inicio de labores (dd/mm/yyyy): ")
     fecha_ultimas_vacaciones = input("Ingrese la fecha de las últimas vacaciones (dd/mm/yyyy): ")
