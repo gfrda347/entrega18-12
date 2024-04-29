@@ -31,6 +31,20 @@ python -m unittest discover ..\tests -p '*test*.py'
 Para ejecutar la interfaz grafica instalar kivy
 pip install [kivy_base]
 
+Para ejecutar las pruebas unitarias ejecute los siguientes comandos
+C:\Users\Usuario\OneDrive\Escritorio\Entrega 3>cd C:\Users\Usuario\OneDrive\Escritorio\Entrega 3\test
+C:\Users\Usuario\OneDrive\Escritorio\Entrega 3\test>set PYTHONPATH=C:\Users\Usuario\OneDrive\Escritorio\Entrega 3\test
+
+Para ejecutar el codigo de la parte logica
+
+cd C:\Users\Usuario\OneDrive\Escritorio\Entrega 3
+C:\Users\Usuario\OneDrive\Escritorio\Entrega 3\src\logica> python calculadora.py
+
+Para ejecutar la interfaz grafica
+
+C:\Users\Usuario\OneDrive\Escritorio\Entrega 3\src
+C:\Users\Usuario\OneDrive\Escritorio\Entrega 3\src\GUI>python app-gui
+
 ## ¿Cómo está hecho?
 
 El proyecto sigue una estructura organizativa que promueve prácticas de Clean Code. A continuación se detalla la arquitectura del proyecto, bibliotecas utilizadas y la organización de los módulos:
